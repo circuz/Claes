@@ -15,11 +15,22 @@ client.once('ready', () => {
 	console.log('Ready!');
 });
 
-const prefix = "claes ";
+const prefix = "hej ";
+const frågetecken = "?"; 
 
-client.on("message", (meddelande) => { 
-	console.log (meddelande) //vi snokar på vad botten ser
-	if (meddelande.author.bot) return; //om det är en bot skiter jag i det, den här ska vara tvärtom sen (=> är en funktion)
+client.on("message", (meddelande) => {  //=> är en funktion
+	if (meddelande.channelId == "873614838692192286" && meddelande.author.id == "873614862578769940" && meddelande.embeds[0]) {
+		let biggmeddelande = {hyperlänkar: [] }
+		biggmeddelande.litteratör = meddelande.embeds[0].author.name
+		if (meddelande.embeds[0].description) biggmeddelande.meddelande = meddelande.embeds[0].description //.description är texten
+		if (meddelande.embeds[0].image) biggmeddelande.hypertavellänk = meddelande.embeds[0].image.url //image.url är länk till bild
+		for (i in meddelande.embeds[0].fields) { if (i == 0) biggmeddelande.hyperhopplänk = meddelande.embeds[0].fields[0].value.match(/\(([:/\w.]+)/i)[1] //första fields är alltid jump to message
+			else biggmeddelande.hyperlänkar.push(meddelande.embeds[0].fields[i].value.match(/\(([:/\w.]+)/i)[1]) //övriga fields gud vet vad, men till exempel power point
+		}
+		console.log(biggmeddelande)
+	}
+	
+	if (meddelande.content.endsWith(frågetecken)) meddelande.reply('Bra fråga, återkommer :)');
 	if (!meddelande.content.startsWith(prefix)) return; //det här fattar tom jag :) 
 
 	const commandBody = meddelande.content.slice(prefix.length); // tar meddelandet som vi fått med prefixet, tar bort så många bokstäver
@@ -28,7 +39,7 @@ client.on("message", (meddelande) => {
 	const command = args.shift().toLowerCase(); //gör allt som finns i args till lowercase, och kallar allt för command   
    
 
-	if (command === "hej") { //blabla om command är hej bla bla
+	if (command === "claes") { //blabla om command är hej bla bla
 
 	const timeTaken = Date.now() - meddelande.createdTimestamp; //den här är helt värdelös men med i exemplet så den får stanna
 	meddelande.reply(`PEE IS STORED IN BALLS`);

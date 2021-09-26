@@ -4,33 +4,71 @@
 
 
 // Require the necessary discord.js classes "klient" är alltså botten pretty much
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, Message, Channel, TextChannel } = require('discord.js');
 const { token } = require('./config.json');
-
+const pinns = '873614838692192286'
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-	console.log('Ready!');
+	console.log('Claes is online');
+
+	const kanalen = client.channels.cache.get(pinns);
+	kanalen.messages.fetch({ limit: 100 }).then(messages => {
+  console.log('baby!');
+  let meddelandearray = []
+  let biggmeddelande = {hyperlänkar: [] }
+  let iteration = 0
+  messages.forEach(kanalmeddelande => meddelandearray.push(kanalmeddelande))
+  
+  for (iteration in meddelandearray) {
+	biggmeddelande.litteratör = meddelandearray[iteration].embeds[0].author.name
+	if (meddelandearray[iteration].embeds[0].description) biggmeddelande.meddelande = meddelandearray[iteration].embeds[0].description //.description är texten
+	if (meddelandearray[iteration].embeds[0].image) biggmeddelande.hypertavellänk = meddelandearray[iteration].embeds[0].image.url //image.url är länk till bild
+	for (i in meddelandearray[iteration].embeds[0].fields) { if (i == 0) biggmeddelande.hyperhopplänk = meddelandearray[iteration].embeds[0].fields[0].value.match(/\(([:/\w.]+)/i)[1] //första fields är alltid jump to message
+		else biggmeddelande.hyperlänkar.push(meddelandearray[iteration].embeds[0].fields[i].value.match(/\(([:/\w.]+)/i)[1]) //övriga fields gud vet vad, men till exempel power point
+	}
+	console.log(biggmeddelande,)
+	++iteration
+	console.log(iteration)
+  }
+})
 });
 
 const prefix = "hej ";
-const frågetecken = "?"; 
+const haranglängd = 63
 
-client.on("message", (meddelande) => {  //=> är en funktion
-	if (meddelande.channelId == "873614838692192286" && meddelande.author.id == "873614862578769940" && meddelande.embeds[0]) {
-		let biggmeddelande = {hyperlänkar: [] }
-		biggmeddelande.litteratör = meddelande.embeds[0].author.name
-		if (meddelande.embeds[0].description) biggmeddelande.meddelande = meddelande.embeds[0].description //.description är texten
-		if (meddelande.embeds[0].image) biggmeddelande.hypertavellänk = meddelande.embeds[0].image.url //image.url är länk till bild
-		for (i in meddelande.embeds[0].fields) { if (i == 0) biggmeddelande.hyperhopplänk = meddelande.embeds[0].fields[0].value.match(/\(([:/\w.]+)/i)[1] //första fields är alltid jump to message
-			else biggmeddelande.hyperlänkar.push(meddelande.embeds[0].fields[i].value.match(/\(([:/\w.]+)/i)[1]) //övriga fields gud vet vad, men till exempel power point
-		}
-		console.log(biggmeddelande)
+var svampbob = function (harang) {
+	var chars = harang.toLowerCase().split("");
+	for (var i = 0; i < chars.length; i += 2) {
+	  chars[i] = chars[i].toUpperCase();
 	}
+	return chars.join("");
+  };
+
+
+
+
+
+client.on("messageCreate", (meddelande) => {  //=> är en funktion
+	//if (meddelande.channelId == pinns && meddelande.author.id == "873614862578769940" && meddelande.embeds[0]) {
+	//	let biggmeddelande = {hyperlänkar: [] }
+	//	biggmeddelande.litteratör = meddelande.embeds[0].author.name
+	//	if (meddelande.embeds[0].description) biggmeddelande.meddelande = meddelande.embeds[0].description //.description är texten
+	//	if (meddelande.embeds[0].image) biggmeddelande.hypertavellänk = meddelande.embeds[0].image.url //image.url är länk till bild
+	//	for (i in meddelande.embeds[0].fields) { if (i == 0) biggmeddelande.hyperhopplänk = meddelande.embeds[0].fields[0].value.match(/\(([:/\w.]+)/i)[1] //första fields är alltid jump to message
+	//		else biggmeddelande.hyperlänkar.push(meddelande.embeds[0].fields[i].value.match(/\(([:/\w.]+)/i)[1]) //övriga fields gud vet vad, men till exempel power point
+	//	}
+	//	console.log(biggmeddelande)
+	//} This has all been moved up to the 'ready' event
+	console.log(meddelande.content.length)
+	if (meddelande.content.length >= haranglängd && meddelande.author.id !== "745345949295181886") {
+		meddelande.channel.send('**' + svampbob(meddelande.content) + '**')
+	}
+		else {
 	
-	if (meddelande.content.endsWith(frågetecken)) meddelande.reply('Bra fråga, återkommer :)');
+	if (meddelande.content.endsWith('?') && meddelande.author.id !== "745345949295181886") meddelande.reply('Bra fråga, återkommer :)');
 	if (!meddelande.content.startsWith(prefix)) return; //det här fattar tom jag :) 
 
 	const commandBody = meddelande.content.slice(prefix.length); // tar meddelandet som vi fått med prefixet, tar bort så många bokstäver
@@ -41,9 +79,8 @@ client.on("message", (meddelande) => {  //=> är en funktion
 
 	if (command === "claes") { //blabla om command är hej bla bla
 
-	const timeTaken = Date.now() - meddelande.createdTimestamp; //den här är helt värdelös men med i exemplet så den får stanna
 	meddelande.reply(`PEE IS STORED IN BALLS`);
-                           
+	}                      
 }
 });
 

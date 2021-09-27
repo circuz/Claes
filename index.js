@@ -6,9 +6,12 @@
 // Require the necessary discord.js classes "klient" är alltså botten pretty much
 const { Client, Intents, Message, Channel, TextChannel } = require('discord.js');
 const { token } = require('./config.json');
+
+
 const pinns = '873614838692192286'
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
@@ -20,6 +23,9 @@ client.once('ready', () => {
   let meddelandearray = []
   let biggmeddelande = {hyperlänkar: [] }
   let iteration = 0
+  var fs = require('fs');
+
+
   messages.forEach(kanalmeddelande => meddelandearray.push(kanalmeddelande))
   
   for (iteration in meddelandearray) {
@@ -30,9 +36,26 @@ client.once('ready', () => {
 		else biggmeddelande.hyperlänkar.push(meddelandearray[iteration].embeds[0].fields[i].value.match(/\(([:/\w.]+)/i)[1]) //övriga fields gud vet vad, men till exempel power point
 	}
 	console.log(biggmeddelande,)
+	var json = JSON.stringify(biggmeddelande) + '\r\n';
+	fs.appendFile('Bigpinns.json', json, 'utf8', function(err) {
+	  if (err) throw err;
+	  console.log('complete');
+	  });
+	console.log('Skrev'+ json);
 	++iteration
 	console.log(iteration)
   }
+
+  //var obj = {
+//	  table: []
+  //}
+  //obj.table.push({id: 1, square: 2});
+
+
+
+
+
+
 })
 });
 

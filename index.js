@@ -17,7 +17,20 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 client.once('ready', () => {
 	console.log('Claes is online');
 
+
 	const kanalen = client.channels.cache.get(pinns);
+	//async function grejGetter(gillesKanal) {
+	//	const guilden = await client.guilds.fetch(gillesKanal)
+	//	const gubbar = guilden.members.fetch()
+	//	return gubbar;
+	//}
+	//const boysen = grejGetter(kanalen.guildId)
+	//async function gubbGetter (kanal) {
+	//	await kanal.guild.members.fetch()
+	//}
+	//const gubbar = gubbGetter(kanalen)
+	//const gubblist = gubbar.map((gubbe) => gubbe.id)
+	//console.log(gubblist)
 	kanalen.messages.fetch({ limit: 100 }).then(messages => {
 		let telegram = messages.map(meddelande => ({ //Deklarar en funktion som input till messages.map //Två paranteser säger att den här kommer direkt bli en grej jag vill
 			litteratör: meddelande?.embeds[0]?.author?.name, //kommatecken avgränsar mellan två fält i det jag returnar
@@ -27,15 +40,15 @@ client.once('ready', () => {
 			hyperövrigbonuslänkar: meddelande?.embeds[0]?.fields?.slice(1)?.map(
 				hyperfält => hyperfält?.value?.match(/\(([:/\w.]+)/i)[1]),
 		}))
-		let JAAAAYSOOOOOon = JSON.stringify(telegram) + '\r\n';
+
+		let rensad = telegram.filter(t => t.litteratör && t.hyperhopplänk)
+		let JAAAAYSOOOOOon = JSON.stringify(rensad, null, "\t");
 		//filGöraren.appendFile('Bigpinns.json', JAAAAYSOOOOOon, 'utf8', function (whoops) {
 		//	if (whoops) throw whoops;
 		//	console.log('complete');
 		//}); DEN HÄR SKA AKTIVERAS SEN NÄR BOTTEN ÄR REDO FÖR RIKTIG BUSINESS
-		
 
-
-		console.log(telegram)
+		console.log(rensad)
 
 
 
@@ -65,7 +78,7 @@ client.on("messageCreate", (meddelande) => {  //=> är en funktion
 	console.log(meddelande.content.length)
 	var aleaIactaEst = Math.floor(Math.random() * 20)
 	console.log('Tärningen är kastad! ' + aleaIactaEst)
-	if (aleaIactaEst == 19 || meddelande.content.length >= haranglängd && meddelande.author.id !== "745345949295181886") {
+	if (aleaIactaEst == 18 || meddelande.content.length >= haranglängd && meddelande.author.id !== "745345949295181886") {
 
 		let jamesCameron = 'https://cdn.discordapp.com/avatars/' + meddelande.author.id + '/' + meddelande.author.avatar
 		async function webbKrok() {
@@ -74,7 +87,6 @@ client.on("messageCreate", (meddelande) => {  //=> är en funktion
 				var webhook = await channel.createWebhook('"' + svampbob(meddelande.member.displayName) + '"', {
 					avatar: jamesCameron,
 				})
-				let b = 2
 
 				await webhook.send({
 					content: '**' + svampbob(meddelande.content) + '**',
@@ -83,7 +95,7 @@ client.on("messageCreate", (meddelande) => {  //=> är en funktion
 				});
 				webhook.delete()
 			} catch (whoops) {
-				console.error('Error trying to send a message: ', whoops);
+				console.error('Här sket det sig: ', whoops);
 			}
 		}
 		webbKrok()
@@ -94,7 +106,6 @@ client.on("messageCreate", (meddelande) => {  //=> är en funktion
 		if (dravel.endsWith('?') && meddelande.author.id !== "745345949295181886") meddelande.reply('Bra fråga, återkommer :)');
 		if (dravel === 'hey guys') { meddelande.reply('https://www.youtube.com/watch?v=fqoM2BJ6_-8') }
 		if (!dravel.startsWith(prefix)) return; //det här fattar tom jag :) 
-		let b = 2
 		const commandBody = dravel.slice(prefix.length); // tar meddelandet som vi fått med prefixet, tar bort så många bokstäver som prefixet är
 		const args = commandBody.split(' '); //skapar "en array of sub-strings" för allt som är mellanslag. Denna heter "args
 		const command = args.shift().toLowerCase(); //gör allt som finns i args till lowercase, och kallar allt för command   
